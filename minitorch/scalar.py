@@ -24,11 +24,11 @@ def central_difference(f, *vals, arg=0, epsilon=1e-6):
     """
     # TODO: Implement for Task 1.1.
     # raise NotImplementedError('Need to implement for Task 1.1')
-    list_1 = list(vals)
-    list_1[arg] = list_1[arg] + epsilon
-    list_2 = list(vals)
-    list_2[arg] = list_2[arg] - epsilon
-    return (f(*list_1) - f(*list_2)) / (2 * epsilon)
+    listone = list(vals)
+    listone[arg] = listone[arg] + epsilon
+    listtwo = list(vals)
+    listtwo[arg] = listtwo[arg] - epsilon
+    return (f(*listone) - f(*listtwo)) / (2 * epsilon)
 
 
 # ## Task 1.2 and 1.4

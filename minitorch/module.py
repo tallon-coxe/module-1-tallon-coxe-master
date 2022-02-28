@@ -2,12 +2,11 @@ class Module:
     """
     Modules form a tree that store parameters and other
     submodules. They make up the basis of neural network stacks.
-
     Attributes:
-        _modules (dict of name x :class:`Module`): Storage of the child modules
-        _parameters (dict of name x :class:`Parameter`): Storage of the module's parameters
+    _modules (dict of name x :class:`Module`): Storage of the child modules
+    _parameters (dict of name x :class:`Parameter`): Storage of the module's
+    parameters
         training (bool): Whether the module is in training mode or evaluation mode
-
     """
 
     def __init__(self):
@@ -31,62 +30,48 @@ class Module:
         for mod in list(self.modules()):
             mod.eval()
 
+    def enumerate_named_parameters(self, loc, parameters):
+        for parameter, value in self.__dict__["_parameters"].items():
+            parameters.append((loc + parameter, value))
+        for name, module in self.__dict__["_modules"].items():
+            module.enumerate_named_parameters(loc + name + ".", parameters)
+
+    def enumerate_parameters(self, parameters):
+        for value in self.__dict__["_parameters"].values():
+            parameters.append(value)
+        for module in self.modules():
+            module.enumerate_parameters(parameters)
+
     def named_parameters(self):
-        """
-        Collect all the parameters of this module and its descendents.
-
-        Returns:
-            list of pairs: Contains the name and :class:`Parameter` of each ancestor parameter.
-        """
-
-        np = []
-
-        for k, v in self.__dict__.items():
-            if k != "_modules":
-                if k == "_parameters":
-                    np += [(k, v) for k, v in v.items()]
-                elif k != "training":
-                    np += [(k, v)]
-
-        if self._modules is None:
-            return np
-        else:
-            for k, v in self._modules.items():
-                np += [(k + "." + name, param) for name, param in v.named_parameters()]
-        return np
+        # """
+        # Collect all the parameters of this module and its descendents.
+        # Returns:
+        # list of pairs: Contains the name and :class:`Parameter` of each
+        # ancestor parameter.
+        # """
+        all_parameters = []
+        self.enumerate_named_parameters("", all_parameters)
+        return all_parameters
 
     def parameters(self):
-        """Enumerate over all the parameters of this module and its descendents
-
-        Returns:
-            list of tuples: a list of all parameters and values pairs
-        """
-
-        params = []
-        for k, v in self.__dict__.items():
-            if k == "_parameters":
-                params += [(k, v) for k, v in v.items()]
-        if self._modules is None:
-            return params
-
-        else:
-            for k, v in self._modules.items():
-                # print(np)
-                # params += [(k + "." + name, param) for name, param in v.parameters()]
-                params += [param for name, param in v.parameters()]
-        return params
+        # """
+        # Enumerate over all the parameters of this module and its descendents
+        # Returns:
+        #     list of tuples: a list of all parameters and values pairs
+        # """
+        all_parameter_v = []
+        self.enumerate_parameters(all_parameter_v)
+        return all_parameter_v
 
     def add_parameter(self, k, v):
-        """
-        Manually add a parameter. Useful helper for scalar parameters.
-
-        Args:
-            k (str): Local name of the parameter.
-            v (value): Value for the parameter.
-
-        Returns:
-            Parameter: Newly created parameter.
-        """
+        # """
+        # Manually add a parameter. Useful helper for scalar parameters.
+        # Args:
+        #     k (str): Local name of the parameter.
+        #     v (value): Value for the parameter.
+        # Returns:
+        #     Parameter: Newly created parameter.
+        # """
         val = Parameter(v, k)
         self.__dict__["_parameters"][k] = val
         return val
@@ -102,7 +87,6 @@ class Module:
     def __getattr__(self, key):
         if key in self.__dict__["_parameters"]:
             return self.__dict__["_parameters"][key]
-
         if key in self.__dict__["_modules"]:
             return self.__dict__["_modules"][key]
 
@@ -110,7 +94,7 @@ class Module:
         return self.forward(*args, **kwargs)
 
     def forward(self):
-        assert False, "Not Implemented"
+        assert True, "Not Implemented"
 
     def __repr__(self):
         def _addindent(s_, numSpaces):
@@ -122,20 +106,16 @@ class Module:
             s = "\n".join(s)
             s = first + "\n" + s
             return s
-
         child_lines = []
-
         for key, module in self._modules.items():
             mod_str = repr(module)
             mod_str = _addindent(mod_str, 2)
             child_lines.append("(" + key + "): " + mod_str)
         lines = child_lines
-
         main_str = self.__class__.__name__ + "("
         if lines:
             # simple one-liner info, which most builtin Modules will use
             main_str += "\n  " + "\n  ".join(lines) + "\n"
-
         main_str += ")"
         return main_str
 
@@ -143,11 +123,9 @@ class Module:
 class Parameter:
     """
     A Parameter is a special container stored in a :class:`Module`.
-
     It is designed to hold a :class:`Variable`, but we allow it to hold
     any value for testing.
     """
-
     def __init__(self, x=None, name=None):
         self.value = x
         self.name = name
