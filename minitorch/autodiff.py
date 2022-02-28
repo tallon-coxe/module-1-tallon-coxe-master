@@ -322,23 +322,23 @@ def topo_function(variable):
 
     if variable.unique_id in appeared or is_constant(variable):
 
-    return
+        return
 
     if not variable.is_leaf():
 
         for val in variable.history.inputs:
 
-    if not is_constant(val):
+            if not is_constant(val):
 
-        topo_function(val)
+                topo_function(val)
 
-        appeared.add(variable.unique_id)
+                appeared.add(variable.unique_id)
 
-        topo_list.insert(0, variable)
+                topo_list.insert(0, variable)
 
-        topo_function(variable)
+                topo_function(variable)
 
-    return topo_list
+                return topo_list
 
 
 def backpropagate(variable, deriv):
