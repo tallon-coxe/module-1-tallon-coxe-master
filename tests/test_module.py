@@ -2,12 +2,8 @@ import minitorch
 import pytest
 from hypothesis import given
 from .strategies import med_ints, small_floats
-
 # # Tests for module.py
-
-
 # ## Website example
-
 # This example builds a module
 # as shown at https://minitorch.github.io/modules.html
 # and checks that its properties work.
@@ -45,21 +41,18 @@ def test_stacked_demo():
     "Check that each of the properties match"
     mod = ModuleA1()
     np = dict(mod.named_parameters())
-
     x = str(mod)
     print(x)
+    print(np)
     assert mod.p1.value == 5
     assert mod.non_param == 10
-
     assert np["p1"].value == 5
     assert np["a.p2"].value == 10
     assert np["b.c.p3"].value == 15
-
-
 # ## Advanced Tests
-
 # These tests generate a stack of modules of varying sizes to check
 # properties.
+
 
 VAL_A = 50
 VAL_B = 100
@@ -100,10 +93,8 @@ def test_module(size_a, size_b):
     module.train()
     assert module.training
     assert len(module.parameters()) == 3
-
     module = Module2(size_b)
     assert len(module.parameters()) == size_b + 3
-
     module = Module2(size_a)
     named_parameters = dict(module.named_parameters())
     assert named_parameters["parameter_a"].value == VAL_A
@@ -124,9 +115,7 @@ def test_stacked_module(size_a, size_b, val):
     assert module.training
     assert module.module_a.training
     assert module.module_b.training
-
     assert len(module.parameters()) == 1 + (size_a + 3) + (size_b + 3)
-
     named_parameters = dict(module.named_parameters())
     assert named_parameters["parameter_a"].value == val
     assert named_parameters["module_a.parameter_a"].value == VAL_A
@@ -136,17 +125,14 @@ def test_stacked_module(size_a, size_b, val):
 
 
 # ## Misc Tests
-
 # Check that the module runs forward correctly.
-
-
 class ModuleRun(minitorch.Module):
     def forward(self):
         return 10
 
 
 @pytest.mark.task0_4
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_module_fail_forward():
     mod = minitorch.Module()
     mod()
@@ -156,11 +142,8 @@ def test_module_fail_forward():
 def test_module_forward():
     mod = ModuleRun()
     assert mod.forward() == 10
-
     # Calling directly should call forward
     assert mod() == 10
-
-
 # Internal check for the system.
 
 

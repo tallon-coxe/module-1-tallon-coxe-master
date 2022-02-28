@@ -84,6 +84,7 @@ def test_one_derivative(fn, t1):
 @pytest.mark.parametrize("fn", two_arg)
 def test_two_derivative(fn, t1, t2):
     name, _, scalar_fn = fn
+    print(fn)
     derivative_check(scalar_fn, t1, t2)
 
 
