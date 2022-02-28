@@ -60,14 +60,18 @@ class Scalar(Variable):
 
     def __add__(self, b):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Add.apply(self, b)
+        #raise NotImplementedError('Need to implement for Task 1.2')
 
     def __bool__(self):
         return bool(self.data)
 
     def __lt__(self, b):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return LT.apply(self, b)
 
     def __gt__(self, b):
         # TODO: Implement for Task 1.2.
@@ -123,7 +127,7 @@ class ScalarFunction(FunctionBase):
         Args:
             ctx (:class:`Context`): A container object to save
                                     any information that may be needed
-                                    for the call to backward.
+                                    for the call to ward.
             *inputs (list of floats): n-float values :math:`x_0 \ldots x_{n-1}`.
 
         Should return float the computation of the function :math:`f`.
