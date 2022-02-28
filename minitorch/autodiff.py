@@ -56,7 +56,7 @@ class Variable:
         """
         if d_output is None:
             d_output = 1.0
-        backpropagate(self, d_output)
+        #backpropagate(VariableWithDeriv(self, d_output))
 
     @property
     def derivative(self):
@@ -191,7 +191,9 @@ class History:
             list of numbers : a derivative with respect to `inputs`
         """
         # TODO: Implement for Task 1.4.
-        raise NotImplementedError('Need to implement for Task 1.4')
+        #raise NotImplementedError('Need to implement for Task 1.4')
+
+        return self.last_fn.chain_rule(self.ctx, self.inputs, d_output)
 
 
 class FunctionBase:
@@ -206,7 +208,9 @@ class FunctionBase:
     @staticmethod
     def variable(raw, history):
         # Implement by children class.
-        raise NotImplementedError()
+        #raise NotImplementedError()
+
+        pass
 
     @classmethod
     def apply(cls, *vals):
@@ -274,7 +278,19 @@ class FunctionBase:
         # Tip: Note when implementing this function that
         # cls.backward may return either a value or a tuple.
         # TODO: Implement for Task 1.3.
-        raise NotImplementedError('Need to implement for Task 1.3')
+        #raise NotImplementedError('Need to implement for Task 1.3')
+
+        my_list = []
+        backward_value = cls.backward(ctx, d_output)
+        # if (isinstance(v,int) == False)
+        # pdb.set_trace()
+        if isinstance(backward_value, tuple) is False:
+            backward_value = (backward_value,)
+        for i, v in enumerate(inputs):
+            if (isinstance(v, int) is False) and (isinstance(v, float) is False):
+                if v.history is not None:
+                    my_list.append(v, backward_value[i])
+        return my_list
 
 
 # Algorithms for backpropagation
@@ -296,7 +312,33 @@ def topological_sort(variable):
                             starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    #raise NotImplementedError('Need to implement for Task 1.4')
+
+    topo_list = []
+
+    appeared = set()
+
+def topo_function(variable):
+
+    if variable.unique_id in appeared or is_constant(variable):
+
+    return
+
+    if not variable.is_leaf():
+
+        for val in variable.history.inputs:
+
+    if not is_constant(val):
+
+        topo_function(val)
+
+        appeared.add(variable.unique_id)
+
+        topo_list.insert(0, variable)
+
+        topo_function(variable)
+
+    return topo_list
 
 
 def backpropagate(variable, deriv):
@@ -313,4 +355,38 @@ def backpropagate(variable, deriv):
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    #raise NotImplementedError('Need to implement for Task 1.4')
+
+    que_variable = topological_sort(variable)
+
+    queue = {variable.unique_id: deriv}
+
+    for val in que_variable:
+
+    if val.is_leaf():
+
+        val.accumulate_derivative(queue[val.unique_id])
+
+    else:
+
+        backward = val.history.backprop_step(queue[val.unique_id])
+
+    for top in backward:
+
+        temp_back = top[0]
+
+        temp_deriv = top[1]
+
+    if temp_back.unique_id in queue:
+
+        queue[temp_back.unique_id] += temp_deriv
+
+    else:
+
+        queue[temp_back.unique_id] = temp_deriv
+
+    for val in que_variable:
+
+        if val._derivative is None:
+
+        val._derivative = queue[val.unique_id]
