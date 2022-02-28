@@ -75,7 +75,9 @@ class Scalar(Variable):
 
     def __gt__(self, b):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return LT.apply(self, b)
 
     def __eq__(self, b):
         # TODO: Implement for Task 1.2.
@@ -83,27 +85,39 @@ class Scalar(Variable):
 
     def __sub__(self, b):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Add.apply(self, -b)
 
     def __neg__(self):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Neg.apply(self)
 
     def log(self):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Log.apply(self)
 
     def exp(self):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Exp.apply(self)
 
     def sigmoid(self):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return Sigmoid.apply(self)
 
     def relu(self):
         # TODO: Implement for Task 1.2.
-        raise NotImplementedError('Need to implement for Task 1.2')
+        #raise NotImplementedError('Need to implement for Task 1.2')
+
+        return ReLU.apply(self)
 
     def get_data(self):
         "Returns the raw float value"
